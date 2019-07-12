@@ -85,13 +85,11 @@ x_test = test_data['data']
 y_test = test_data['labels']
 
 x_test = x_test.reshape(10000, 3, 32, 32).transpose(0,2,3,1).astype("uint8")
-x_test = x_test[0:200]
 x_test = x_test / 255
 
 n_classes = 10
 y_test = np.array(y_test).reshape(-1)
 y_test = np.eye(n_classes)[y_test]
-y_test = y_test[0:200]
 
 
 # In[ ]:
