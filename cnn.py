@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[24]:
 
 
 import tensorflow as tf
 
-
-# In[25]:
 
 
 import numpy as np
@@ -16,13 +13,11 @@ import matplotlib.pyplot as plt
 import math
 
 
-# In[26]:
 
 
 import glob
 
 
-# In[44]:
 
 
 #directory location of cifar-10 binary files
@@ -32,7 +27,6 @@ LEARNING_RATE = 0.001
 EPOCH = 50
 
 
-# In[28]:
 
 
 # produce images for training from data_batch_i where 0 < i < 6
@@ -64,7 +58,6 @@ def image_training_generator():
                 
 
 
-# In[29]:
 
 
 # you can use similar approach to generate test data, but here we want to use another common approach
@@ -78,7 +71,6 @@ def unpickle(file_location):
 test_data = unpickle(test_pickle_python)
 
 
-# In[30]:
 
 
 x_test = test_data['data']
@@ -92,13 +84,6 @@ y_test = np.array(y_test).reshape(-1)
 y_test = np.eye(n_classes)[y_test]
 
 
-# In[ ]:
-
-
-
-
-
-# In[31]:
 
 
 # if you have variance problem use this class to increase your training data
@@ -121,14 +106,6 @@ class ImageTransformation:
     def transform_image(images, transform_vector):
         return tf.contrib.image.transform(images, transform_vector)
 
-
-# In[ ]:
-
-
-
-
-
-# In[32]:
 
 
 # we use 2 convolutional layers, and use max pool in each convolutional layer, our classification layer 
@@ -154,7 +131,6 @@ def dense_layer(input_tensor, neurons=128):
     
 
 
-# In[33]:
 
 
 X = tf.placeholder(dtype=tf.float32, shape=(None, 32,32,3), name='input_images')
@@ -163,7 +139,6 @@ X = tf.placeholder(dtype=tf.float32, shape=(None, 32,32,3), name='input_images')
 y_true = tf.placeholder(dtype=tf.float32, shape=(None, 10), name='label_of_input_images')
 
 
-# In[34]:
 
 
 # we can use at most one -1 in shape argument. because the number of batch is unknown until run time. we use -1 
@@ -201,19 +176,16 @@ dropped_2 = tf.nn.dropout(dense_layer_2,keep_prob=0.8)
 classification_layer = dense_layer(dropped_2, neurons=10)
 
 
-# In[35]:
 
 
 classification_layer.get_shape()
 
 
-# In[36]:
 
 
 train_dataset = tf.data.Dataset.from_generator(image_training_generator, output_types=(tf.float32, tf.int32))
 
 
-# In[37]:
 
 
 # using batch(BATCH_SIZE) not works!, why?
@@ -221,14 +193,13 @@ train_dataset = train_dataset.apply(tf.contrib.data.sliding_window_batch(window_
 train_dataset = train_dataset.repeat(EPOCH)
 
 
-# In[38]:
 
 
 iterator = train_dataset.make_one_shot_iterator()
 elements = iterator.get_next()
 
 
-# In[39]:
+
 
 
 loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_true, logits=classification_layer))
@@ -236,13 +207,11 @@ optimzer = tf.train.AdamOptimizer(learning_rate=LEARNING_RATE)
 train = optimzer.minimize(loss)
 
 
-# In[40]:
 
 
 vars_init = tf.global_variables_initializer()
 
 
-# In[45]:
 
 
 with tf.Session() as sess:
@@ -265,13 +234,10 @@ with tf.Session() as sess:
             break
 
 
-# In[ ]:
-
 
 # accuracy after 31200 updates in weights: 0.6800000254260437
 
 
-# In[ ]:
 
 
 
